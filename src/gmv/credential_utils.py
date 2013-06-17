@@ -85,13 +85,13 @@ def get_oauth_tok_sec(email, use_webbrowser = False, debug=False):
     
     auth_url = gdata_serv.GenerateOAuthAuthorizationURL(request_token=request_token, extra_params=url_params)
     
-    #message to indicate that a browser will be opened
-    raw_input('gmvault will now open a web browser page in order for you to grant gmvault access to your Gmail.\n'\
-              'Please make sure you\'re logged into the correct Gmail account (%s) before granting access.\n'\
-              'Press ENTER to open the browser. Once you\'ve granted access you can switch back to gmvault.' % (email))
-    
     # run web browser otherwise print message with url
     if use_webbrowser:
+        #message to indicate that a browser will be opened
+        raw_input('gmvault will now open a web browser page in order for you to grant gmvault access to your Gmail.\n'\
+                  'Please make sure you\'re logged into the correct Gmail account (%s) before granting access.\n'\
+                  'Press ENTER to open the browser. Once you\'ve granted access you can switch back to gmvault.' % (email))
+    
         try:
             webbrowser.open(str(auth_url))  
         except Exception, err: #pylint: disable-msg=W0703
@@ -105,8 +105,8 @@ def get_oauth_tok_sec(email, use_webbrowser = False, debug=False):
                   " gmvault access, press the Enter key.\n" % (auth_url))
         
     else:
-        raw_input('Please log in and/or grant access via your browser at %s '
-                  'then hit enter.' % (auth_url))
+        raw_input('Please log in and/or grant access via your browser at %s ' 'then hit enter.\n'
+                  'Please make sure you\'re logged into the correct Gmail account (%s) before granting access.' % (auth_url, email))
     
     try:
         final_token = gdata_serv.UpgradeToOAuthAccessToken(request_token)
@@ -340,7 +340,11 @@ class CredentialHelper(object):
                 if two_legged:
                     token, secret, type = get_2_legged_oauth_tok_sec()
                 else:
-                    token, secret, type = get_oauth_tok_sec(args['email'], use_webbrowser = True)
+                    if 'use_webbrowser' in args:
+                        use_webbrowser = args['use_webbrowser']
+                    else:
+                        use_webbrowser = False
+                    token, secret, type = get_oauth_tok_sec(args['email'], use_webbrowser = use_webbrowser)
                 
                 if not token:
                     raise Exception("Cannot get XOAuth token from Gmail. See Gmail error message")

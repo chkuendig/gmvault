@@ -187,6 +187,10 @@ class GMVaultLauncher(object):
                           help="use oauth for authentication. (default recommended method)",\
                           action='store_const', dest="oauth_token", const='empty', default='not_seen')
         
+        sync_parser.add_argument("--no-browser", \
+                          help="do not launch a browser to handle oauth authentication, just show the url",\
+                          action='store_false', dest="use_webbrowser")
+
         sync_parser.add_argument("-p", "--passwd", \
                           help="use interactive password authentication. (not recommended)",
                           action= 'store_const' , dest="passwd", const='empty', default='not_seen')
