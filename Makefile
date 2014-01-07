@@ -127,6 +127,11 @@ gmv-mac-dist: clean init
 	cp -R $(BASEDIR)/src/gmv_runner.py $(GMVDIST)
 	cp $(BASEDIR)/src/setup_mac.py $(GMVDIST)
 	cd $(GMVDIST); $(PYTHONBIN) setup_mac.py py2app --arch=intel
+	# include local version of some libs to avoid compilation problems
+	cp $(BASEDIR)/etc/libs/*.tar.gz $(GMVDIST)/dist/gmv_runner.app/Contents/Resources/lib/python$(PYTHONVERSION)/
+	cd $(GMVDIST)/dist/gmv_runner.app/Contents/Resources/lib/python$(PYTHONVERSION)/;  \
+		tar xzf atom.tar.gz;	tar xzf cgi.tar.gz; tar xzf gdata.tar.gz; tar xzf imapclient.tar.gz; tar xzf logbook.tar.gz; tar xzf xml.tar.gz; rm -f *.tar.gz
+	# copy everything together
 	mkdir -p $(GMVDIST)/$(GMVDISTNAME)/bin ; mkdir -p $(GMVDIST)/$(GMVDISTNAME)/lib
 	cp $(BASEDIR)/etc/scripts/gmvault_mac $(GMVDIST)/$(GMVDISTNAME)/bin/gmvault
 	cp -R $(BASEDIR)/README.md $(GMVDIST)/$(GMVDISTNAME)/bin/README.txt
